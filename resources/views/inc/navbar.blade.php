@@ -13,7 +13,7 @@
                 <select class="form-control  pr-5 font-weight-bold" id="fieldToSearch" >
                         <option value="FName">FAMILY NAME</option>
                         <option value="CREWCODE">CREW CODE</option>
-                        <option value="APPLICANTNO">APPLICANT</option>
+                        <option value="APPLICANTNO">APPLICANT NO</option>
                         <option value="GNAME">GIVEN NAME</option>
                 </select>
                 <label class="sr-only" for="searchField"> Search </label>

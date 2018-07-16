@@ -179,6 +179,7 @@ return [
         App\Providers\RouteServiceProvider::class,
         App\Providers\ShaHashServiceProvider::class,
         \hisorange\BrowserDetect\ServiceProvider::class,
+        App\Providers\PaginationServiceProvider::class,
 
     ],
 

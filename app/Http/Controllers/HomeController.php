@@ -10,7 +10,7 @@ class HomeController extends Controller
 {
     public function index(Request $request) {
     
-        if($request->input('searchField')) $this->search($request->input('searchField'));
+        // if($request->input('searchField')) $this->search($request->input('searchField'));
         if(session('employeeid')) {
             $accessLevel = DB::select("SELECT al.MENU, a.accessid FROM access a LEFT JOIN accessLevels al ON a.ACCESSID=al.ACCESSID WHERE a.EMPLOYEEID=? ORDER BY al.POSITION", array(session('employeeid')));
             foreach($accessLevel as $access) {
@@ -86,9 +86,29 @@ class HomeController extends Controller
 
     // public function search($searchText, $fieldToSearch) {
     public function search($searchText, $fieldToSearch) {
-        // dd($searchText.': SearchText', $fieldToSearch.": FieldToSearch", 'Home Controller');
-        return view('home/search')->with('searchData', [$searchText, $fieldToSearch]);
-
+        if(session('employeeid')) {
+            $applicants = $this->searchApplicantsBy($searchText, $fieldToSearch);
+            foreach($applicants as $applicant) {
+                $applicant->RANK = $this->getRank($applicant->APPLICANTNO);
+            }
+            return view('home/veripro')->with('applicants', $applicants);
+        } else {
+            return redirect('/')->with('error', 'You must login first!!');
+        }
     }
+
+    private function searchApplicantsBy($searchText, $fieldToSearch) {
+        $applicants = DB::table('crew')
+            ->leftJoin('crewfasttrack', 'crewfasttrack.APPLICANTNO', '=', 'crew.APPLICANTNO')
+            ->leftJoin('fasttrack', 'fasttrack.fasttrack', '=', 'crewfasttrack.FASTTRACKCODE')
+            ->leftJoin('crewscholar', 'crewscholar.APPLICANTNO', '=', 'crew.APPLICANTNO')
+            ->leftJoin('scholar', 'scholar.SCHOLASTICCODE', '=', 'crewscholar.SCHOLASTICCODE')
+            ->where('crew.'.$fieldToSearch, 'like', '%'.$searchText.'%')
+            ->select('crew.APPLICANTNO', 'crew.CREWCODE', 'crew.FNAME', 'crew.GNAME', 'crew.MNAME', 'crew.STATUS', 
+            'crew.UTILITY', 'scholar.DESCRIPTION', 'fasttrack.FASTTRACK')->paginate(15);
+        return $applicants;
+    }
+
+    
 
 }

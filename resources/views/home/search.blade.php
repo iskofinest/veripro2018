@@ -39,10 +39,10 @@
                     @endif
                   </tbody>
                 </table>
-                {{ $posts->links('pagination.default') }}
+                {{-- {{ $posts->links('pagination.default') }} --}}
                 {{-- @include('pagination.default', ['paginator' => $applicants]) --}}
-                {{-- <div class=" pagination col-sm-8 col-md-8" style="justify-content: center;"> {{ $applicants->links() }} </div>
-                <div class="pagination ">{{ $applicants->links() }} </div> --}}
+                {{-- <div class=" pagination col-sm-8 col-md-8" style="justify-content: center;"> {{ $applicants->links() }} </div>--}}
+                <div class="pagination ">{{ $applicants->links() }} </div> 
         
         </section>
 
