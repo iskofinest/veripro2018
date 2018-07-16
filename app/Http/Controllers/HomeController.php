@@ -9,34 +9,79 @@ use Illuminate\Http\Request;
 class HomeController extends Controller
 {
     public function index(Request $request) {
-        // if(session('employeeid')) var_dump(session('employeeid'));
-        // else var_dump("walang laman");
+    
         if($request->input('searchField')) $this->search($request->input('searchField'));
         if(session('employeeid')) {
-            // session()->forget('employeeid');
-            // $accessLevels = DB::select("select menu, submenu1 from accessLevels where accessid in (select accessid from access where employeeid=?)", array(session('employeeid')));
             $accessLevel = DB::select("SELECT al.MENU, a.accessid FROM access a LEFT JOIN accessLevels al ON a.ACCESSID=al.ACCESSID WHERE a.EMPLOYEEID=? ORDER BY al.POSITION", array(session('employeeid')));
-
-            // foreach($accessLevels as $access) {
-            //     $accessLevels[$access->MENU] = [];  
-            // }
             foreach($accessLevel as $access) {
                 $accessLevels[$access->MENU] = 
                     DB::select("SELECT submenu1, submenu2, submenu3 FROM accessLevels WHERE menu=? AND accessid IN (SELECT accessid FROM access WHERE employeeid=?)", array($access->MENU, session('employeeid')));  
             }
-            // var_dump($accessLevels);
-            // dd($accessLevels);
             if(isset($accessLevels)){
                 session()->put('accessLevels', $accessLevels);
-                return view('home/veripro');
-                // return view('home/veripro')->with('accessLevels', $accessLevels);
+                $applicants = $this->getAllApplicants();
+                foreach($applicants as $applicant) {
+                    $applicant->RANK = $this->getRank($applicant->APPLICANTNO);
+                    // var_dump($applicant);
+                }
+                return view('home/veripro')->with('applicants', $applicants);
             }
             else {
-                return view('home/veripro')->with('error', 'You do not have access level');
-                // return view('home/veripro')->with('error', 'You do not have access level');
+                session()->flush();
+                return redirect('/')->with('error', 'You do not have access level');
             }
         }
         else return redirect('/')->with('error', 'You must login first!!');
+    }
+
+    // home function for retrieving all applicants
+    private function getAllApplicants() {
+        // $applicants = DB::select('SELECT c.APPLICANTNO,c.CREWCODE,FNAME,GNAME,MNAME,c.STATUS,c.UTILITY,
+        // s.DESCRIPTION AS SCHOLARTYPE,f.FASTTRACK AS FASTTRACKTYPE
+        // FROM crew c
+        // LEFT JOIN crewfasttrack cf ON cf.APPLICANTNO=c.APPLICANTNO
+        // LEFT JOIN fasttrack f ON f.fasttrack=cf.FASTTRACKCODE
+        // LEFT JOIN crewscholar cs ON cs.APPLICANTNO=c.APPLICANTNO
+        // LEFT JOIN scholar s ON s.SCHOLASTICCODE=cs.SCHOLASTICCODE');
+        $applicants = DB::table('crew')
+            ->leftJoin('crewfasttrack', 'crewfasttrack.APPLICANTNO', '=', 'crew.APPLICANTNO')
+            ->leftJoin('fasttrack', 'fasttrack.fasttrack', '=', 'crewfasttrack.FASTTRACKCODE')
+            ->leftJoin('crewscholar', 'crewscholar.APPLICANTNO', '=', 'crew.APPLICANTNO')
+            ->leftJoin('scholar', 'scholar.SCHOLASTICCODE', '=', 'crewscholar.SCHOLASTICCODE')
+            ->select('crew.APPLICANTNO', 'crew.CREWCODE', 'crew.FNAME', 'crew.GNAME', 'crew.MNAME', 'crew.STATUS', 
+            'crew.UTILITY', 'scholar.DESCRIPTION', 'fasttrack.FASTTRACK')->paginate(15);
+        return $applicants;
+    }
+
+    private function getRank($applicantNo) {
+        $sql = "SELECT z.DATEDISEMB,v.MANAGEMENTCODE,v.VESSEL,z.RANKCODE,r.RANK ,r.ALIAS1 FROM 
+                    (
+                        SELECT '1' AS VMC,RANKCODE,DATEDISEMB,VESSELCODE
+                        FROM
+                            (
+                            SELECT RANKCODE,VESSELCODE,
+                            IF(IF(DATECHANGEDISEMB IS NULL,DATEDISEMB,DATECHANGEDISEMB) > CURRENT_DATE,
+                                CURRENT_DATE,IF(DATECHANGEDISEMB IS NULL,DATEDISEMB,DATECHANGEDISEMB)) AS DATEDISEMB
+                            FROM crewchange where APPLICANTNO=$applicantNo AND DATEEMB < CURRENT_DATE
+                            ORDER BY DATEDISEMB DESC
+                            ) x
+                        
+                        UNION					
+                                            
+                        SELECT '2' AS VMC,RANKCODE,DATEDISEMB,NULL
+                        FROM
+                            (
+                            SELECT RANKCODE,DATEDISEMB
+                            FROM crewexperience where APPLICANTNO=$applicantNo
+                            ORDER BY DATEDISEMB DESC
+                            ) y
+                    ) z
+                    LEFT JOIN rank r ON r.RANKCODE=z.RANKCODE
+                    LEFT JOIN vessel v ON v.VESSELCODE=z.VESSELCODE
+                    ORDER BY DATEDISEMB DESC limit 1";
+        $rank = DB::selectOne($sql);
+        if(empty($rank->RANK)) return "";
+        else return $rank->RANK;
     }
 
     // public function search($searchText, $fieldToSearch) {

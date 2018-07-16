@@ -11,10 +11,10 @@
             <div class="form-group mx-sm-3 mb-2">
                 <label class="sr-only" for="fieldToSearch"> Select Field </label>
                 <select class="form-control  pr-5 font-weight-bold" id="fieldToSearch" >
-                        <option>FAMILY NAME</option>
-                        <option>CREW CODE</option>
-                        <option>APPLICANT</option>
-                        <option>GIVEN NAME</option>
+                        <option value="FName">FAMILY NAME</option>
+                        <option value="CREWCODE">CREW CODE</option>
+                        <option value="APPLICANTNO">APPLICANT</option>
+                        <option value="GNAME">GIVEN NAME</option>
                 </select>
                 <label class="sr-only" for="searchField"> Search </label>
                 <input type="text" id="searchField" class="form-control ml-2 mr-2 font-weight-bold" onKeyPress="search()"
