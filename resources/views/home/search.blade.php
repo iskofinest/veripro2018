@@ -22,7 +22,6 @@
                     @if(count($applicants) > 0)
                         @foreach($applicants as $applicant)
                             <tr>
-                                
                                 <td>{{$applicant->APPLICANTNO}}</td>
                                 <td>{{$applicant->CREWCODE}}</td>
                                 <td>{{$applicant->FNAME}}</td>
@@ -39,10 +38,7 @@
                     @endif
                   </tbody>
                 </table>
-                {{-- {{ $posts->links('pagination.default') }} --}}
-                {{-- @include('pagination.default', ['paginator' => $applicants]) --}}
-                {{-- <div class=" pagination col-sm-8 col-md-8" style="justify-content: center;"> {{ $applicants->links() }} </div>--}}
-                <div class="pagination ">{{ $applicants->links() }} </div> 
+                {{$applicants->links('vendor.pagination.bootstrap-4')}}
         
         </section>
 
@@ -50,9 +46,15 @@
 
         <div class="col-sm-6 col-md-4"> 
             <div class="card mb-4">
+                <script>
+                    // alert("/storage/idpics/{{$applicants[0]->APPLICANTNO}}.jpg");
+                </script>
                 <div class="card-body text-center">
-                    <h5 class="card-title"> Card Title </h5>
-                    <p class="card-text"> Some quick text to build up on the card title </p>
+                    {{-- <img src="/storage/idpics/{{$applicants[0]->APPLICANTNO}}.JPG"> --}}
+                    <img  style="width: 100%" src="/storage/idpics/{{$applicants[0]->APPLICANTNO}}.JPG">
+                    {{-- <img src="{{asset('bootstrap4\dist\js\bootstrap.min.js')}}"> --}}
+                    {{-- <h5 class="card-title"> Card Title </h5>
+                    <p class="card-text"> Some quick text to build up on the card title </p> --}}
                     <a href="#" class="card-link"> Another link </a>
                 </div>
             </div>

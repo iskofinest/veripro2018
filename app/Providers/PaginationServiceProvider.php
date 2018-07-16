@@ -16,7 +16,7 @@ class PaginationServiceProvider extends ServiceProvider
     {
         //
         // Paginator::defaultView('pagination::view');
-        Paginator::defaultSimpleView('pagination::view');
+        // Paginator::defaultSimpleView('pagination::view');
     }
 
     /**

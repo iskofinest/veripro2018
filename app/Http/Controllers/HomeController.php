@@ -24,6 +24,10 @@ class HomeController extends Controller
                     $applicant->RANK = $this->getRank($applicant->APPLICANTNO);
                     // var_dump($applicant);
                 }
+                $data = [
+                    'applicants'  => $applicants,
+                    // 'list1' => $this->getApplicantDetails()
+                ];
                 return view('home/veripro')->with('applicants', $applicants);
             }
             else {
@@ -91,7 +95,12 @@ class HomeController extends Controller
             foreach($applicants as $applicant) {
                 $applicant->RANK = $this->getRank($applicant->APPLICANTNO);
             }
-            return view('home/veripro')->with('applicants', $applicants);
+            $data = [
+                'applicants'  => $applicants,
+                'searchText' => $searchText,
+                'fieldToSearch' => $fieldToSearch
+            ];
+            return view('home/veripro')->with($data);
         } else {
             return redirect('/')->with('error', 'You must login first!!');
         }
@@ -109,6 +118,8 @@ class HomeController extends Controller
         return $applicants;
     }
 
-    
+    private function getApplicantDetails($employeeNo) {
+
+    }
 
 }

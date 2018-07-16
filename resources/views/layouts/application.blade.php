@@ -14,6 +14,7 @@
         <script src="{{asset('bootstrap4\assets\js\vendor\jquery-slim.min.js')}}"></script>
         <script src="{{asset('bootstrap4\assets\js\vendor\popper.min.js')}}"></script>
         <script src="{{asset('bootstrap4\dist\js\bootstrap.min.js')}}"></script>
+        <link rel="stylesheet" href="{{asset('style.css')}}">
 
     </head>
 

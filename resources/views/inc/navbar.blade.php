@@ -10,15 +10,30 @@
                 
             <div class="form-group mx-sm-3 mb-2">
                 <label class="sr-only" for="fieldToSearch"> Select Field </label>
-                <select class="form-control  pr-5 font-weight-bold" id="fieldToSearch" >
+                <select class="form-control  pr-5 font-weight-bold" id="fieldToSearch">
                         <option value="FName">FAMILY NAME</option>
                         <option value="CREWCODE">CREW CODE</option>
                         <option value="APPLICANTNO">APPLICANT NO</option>
                         <option value="GNAME">GIVEN NAME</option>
                 </select>
+                @if(isset($fieldToSearch))
+                    <script>
+                        document.getElementById('fieldToSearch').value = "{{$fieldToSearch}}";
+                    </script>
+                @endif
                 <label class="sr-only" for="searchField"> Search </label>
-                <input type="text" id="searchField" class="form-control ml-2 mr-2 font-weight-bold" onKeyPress="search()"
+                <input type="text" id="searchField" class="form-control ml-2 mr-2 font-weight-bold"
+                    @if(isset($searchText))
+                        value={{$searchText}}
+                    @endif
+                placeholder="Search" required autofocus style="width: 300px; text-transform: uppercase" name="searchField">
+                {{-- @if($searchText)
+                    <input type="text" id="searchField" class="form-control ml-2 mr-2 font-weight-bold" value={{$searchText}}
                         placeholder="Search" required autofocus style="width: 300px; text-transform: uppercase" name="searchField">
+                @else
+                    <input type="text" id="searchField" class="form-control ml-2 mr-2 font-weight-bold"
+                    placeholder="Search" required autofocus style="width: 300px; text-transform: uppercase" name="searchField">
+                @endif --}}
             </div>
         </div>
 
@@ -32,11 +47,11 @@
                 @if(session('accessLevels')["CREW"])
                     <li class="nav-item dropdown active">
                         <a class="nav-link dropdown-toggle" href="" id="crewDropdown" data-toggle="dropdown"> <h4>Crew</h4>  </a>
-                        <div class="dropdown-menu bg-primary">
+                        <div class="dropdown-menu bg-light">
                             @foreach(session('accessLevels')["CREW"] as $crew_selection)
 
                                 @if(in_array("Crew Change Plan", (array)$crew_selection)) 
-                                    <a class="dropdown-item col-sm-8 col-md-8 col-lg-8" href="#"> <h6>Crew Change Plan</h6> </a> 
+                                    <a class="dropdown-item " href="#"> <h6>Crew Change Plan</h6> </a> 
 
                                 @elseif(in_array("Onboard Manipulation", (array)$crew_selection))
                                     <a class="dropdown-item" href="#"> <h6> Onboard Manipulation</h6> </a> 
@@ -247,6 +262,7 @@
             var searchText = $('#searchField').val();
             var searchField = $('#fieldToSearch').val();
             if(searchText != "")  window.location = "{{url('home/search')}}" + "/"  + searchText + "/" + searchField;
+            else  window.location = "{{url('home')}}";
         }
     });
    
