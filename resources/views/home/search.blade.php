@@ -7,10 +7,9 @@
 
                 <div class="form-inline " style="width: 1000px">
                 
-                        <h2>Search Results</h2>
-                        <div class="form-group mx-sm-3 mb-2">
+                        <div class="pl-5 form-group mx-sm-3 mb-2">
                             <label class="sr-only" for="fieldToSearch"> Select Field </label>
-                            <select class="form-control  pr-5 font-weight-bold" id="fieldToSearch">
+                            <select class="form-control  pr-0 font-weight-bold" id="fieldToSearch">
                                     <option value="FName">FAMILY NAME</option>
                                     <option value="CREWCODE">CREW CODE</option>
                                     <option value="APPLICANTNO">APPLICANT NO</option>
@@ -22,12 +21,33 @@
                                 </script>
                             @endif
                             <label class="sr-only" for="searchField"> Search </label>
-                            <input type="text" id="searchField" class="form-control ml-2 mr-2 font-weight-bold"
+                            <input type="text" id="searchField" class="form-control ml-2 font-weight-bold" style="width: 250px;"
                                 @if(isset($searchText))
                                     value={{$searchText}}
                                 @endif
                             placeholder="Search" required autofocus style="width: 300px; text-transform: uppercase" name="searchField">
                         </div>
+                        
+                        <div class="form-group mx-sm-3 mb-2">
+                                <label class="sr-only" for="fieldToSearch"> Select Field </label>
+                                <select class="form-control  pr-0 font-weight-bold" id="fieldToSearch">
+                                        <option value="FName">FAMILY NAME</option>
+                                        <option value="CREWCODE">CREW CODE</option>
+                                        <option value="APPLICANTNO">APPLICANT NO</option>
+                                        <option value="GNAME">GIVEN NAME</option>
+                                </select>
+                                @if(isset($fieldToSearch))
+                                    <script>
+                                        document.getElementById('fieldToSearch').value = "{{$fieldToSearch}}";
+                                    </script>
+                                @endif
+                                <label class="sr-only" for="searchField"> Search </label>
+                                <input type="text" id="searchField" class="form-control ml-2 font-weight-bold" style="width: 250px;"
+                                    @if(isset($searchText))
+                                        value={{$searchText}}
+                                    @endif
+                                placeholder="Search" required autofocus style="width: 300px; text-transform: uppercase" name="searchField">
+                            </div>
                     </div>
         
                 {{-- <p> Can inject supporting details for result</p> --}}
@@ -129,7 +149,7 @@
     });
 
     function view201() {
-
+        window.open('/google.com');
     }
 
 </script>
