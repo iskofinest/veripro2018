@@ -24,5 +24,6 @@ Route::get('/users/logout', 'UsersController@logout');
 Route::get('/home', 'HomeController@index');
 Route::get('/home/search/{searchText}/{searchField}', 'HomeController@search');
 
-
 Route::resource('users', 'UsersController');
+
+Route::get('/crew/{applicantNo}', 'CrewsController@show201');

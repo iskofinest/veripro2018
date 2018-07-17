@@ -5,40 +5,7 @@
         <span class="navbar-toggler-icon"> </span>
     </button>
 
-   
-        <div class="form-inline " style="width: 1000px">
-                
-            <div class="form-group mx-sm-3 mb-2">
-                <label class="sr-only" for="fieldToSearch"> Select Field </label>
-                <select class="form-control  pr-5 font-weight-bold" id="fieldToSearch">
-                        <option value="FName">FAMILY NAME</option>
-                        <option value="CREWCODE">CREW CODE</option>
-                        <option value="APPLICANTNO">APPLICANT NO</option>
-                        <option value="GNAME">GIVEN NAME</option>
-                </select>
-                @if(isset($fieldToSearch))
-                    <script>
-                        document.getElementById('fieldToSearch').value = "{{$fieldToSearch}}";
-                    </script>
-                @endif
-                <label class="sr-only" for="searchField"> Search </label>
-                <input type="text" id="searchField" class="form-control ml-2 mr-2 font-weight-bold"
-                    @if(isset($searchText))
-                        value={{$searchText}}
-                    @endif
-                placeholder="Search" required autofocus style="width: 300px; text-transform: uppercase" name="searchField">
-                {{-- @if($searchText)
-                    <input type="text" id="searchField" class="form-control ml-2 mr-2 font-weight-bold" value={{$searchText}}
-                        placeholder="Search" required autofocus style="width: 300px; text-transform: uppercase" name="searchField">
-                @else
-                    <input type="text" id="searchField" class="form-control ml-2 mr-2 font-weight-bold"
-                    placeholder="Search" required autofocus style="width: 300px; text-transform: uppercase" name="searchField">
-                @endif --}}
-            </div>
-        </div>
-
-
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <div class="collapse navbar-collapse " id="navbarSupportedContent">
         
 
         <ul class="navbar-nav ml-auto ">
@@ -238,7 +205,7 @@
              @endif
 
              <li class="nav-item active">
-                    <a class="nav-link " <a  id="logout"> <h4>Logout</h4> </a>
+                    <a class=" btn nav-link " <a id="logout"> <h4>Logout</h4> </a>
                 </li>
 
         </ul> <!-- <ul class="navbar-nav ml-auto"> -->
@@ -253,16 +220,6 @@
         
         if(confirm('Do you want to logout?')){
             window.location.href = "{{url('users/logout')}}";
-        }
-    });
-
-    // function for search 
-    $("#searchField").keypress(function(e) {
-        if(e.which == 13) {
-            var searchText = $('#searchField').val();
-            var searchField = $('#fieldToSearch').val();
-            if(searchText != "")  window.location = "{{url('home/search')}}" + "/"  + searchText + "/" + searchField;
-            else  window.location = "{{url('home')}}";
         }
     });
    
