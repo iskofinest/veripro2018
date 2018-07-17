@@ -73,64 +73,31 @@
             <div class="card mb-4">
                 <div class="card-body">
 
-                    <h5 class="card-title text-center"> <img id="applicantImage" 
+                    @if(file_exists('storage/idpics/'.$applicants[0]->APPLICANTNO.'.JPG')) 
+                        <h5 class="card-title text-center"> <img id="applicantImage" 
                         src={{asset('storage/idpics/'.$applicants[0]->APPLICANTNO.'.JPG')}}
-                        {{-- {{'/'.$applicants[0]->APPLICANTNO.'.JPG'}} --}}
-                        {{-- {{'/no_image.jpg'}} --}}
-                        {{-- src="{{asset('storage/idpics/')}}".{{$applicants[0]->APPLICANTNO}}.jpg --}}
                         style="border: 1px solid black;" height="250px" width = "250px"> </h5>
-                        {{-- @if(file_exists( {{asset('storage/idpics/'.$applicants[0]->APPLICANTNO.'.JPG')}} )) --}}
+                    @else
+                        <h5 class="card-title text-center"> <img id="applicantImage" 
+                        src={{asset('storage/idpics/no_image.JPG')}}
+                        style="border: 1px solid black;" height="250px" width = "250px"> </h5>
+                    @endif
                         
                     <div class="row m-3">
-                            <button type="button" class="col col-12 btn btn-primary mb-2" onclick="view201()">201 Profile</button>
-                            <button type="button" class="col col-12 btn btn-primary mb-2">Debriefing</button>
-                            <button type="button" class="col col-12 btn btn-primary mb-2">Withdrawal</button>
-                            <button type="button" class="col col-12 btn btn-primary mb-2">Training</button>
-                            <button type="button" class="col col-12 btn btn-primary mb-2">Crew Comments</button>
-                            <button type="button" class="col col-12 btn btn-primary mb-2">Documents Index</button>
-                            <button type="button" class="col col-12 btn btn-primary mb-2">List of Recommendee</button>
-                            <button type="button" class="col col-12 btn btn-primary mb-2">Cash Advance</button>
-                        </div>
-                    {{-- <p class="card-text"> Some quick text to build up on the card title </p>
-                    <a href="#" class="card-link"> Another link </a> --}}
+                        <button type="button" class="col col-12 btn btn-primary mb-2" onclick="view201()">201 Profile</button>
+                        <button type="button" class="col col-12 btn btn-primary mb-2">Debriefing</button>
+                        <button type="button" class="col col-12 btn btn-primary mb-2">Withdrawal</button>
+                        <button type="button" class="col col-12 btn btn-primary mb-2">Training</button>
+                        <button type="button" class="col col-12 btn btn-primary mb-2">Crew Comments</button>
+                        <button type="button" class="col col-12 btn btn-primary mb-2">Documents Index</button>
+                        <button type="button" class="col col-12 btn btn-primary mb-2">List of Recommendee</button>
+                        <button type="button" class="col col-12 btn btn-primary mb-2">Cash Advance</button>
+                    </div>
                 </div>
             </div>
         </div>
 
-</div>
-
-  {{-- <div class="row">
-
-        <div class="col-sm-6 col-md-4"> 
-            <div class="card mb-4">
-                <div class="card-body text-center">
-                    <h5 class="card-title"> Card Title </h5>
-                    <p class="card-text"> Some quick text to build up on the card title </p>
-                    <a href="#" class="card-link"> Another link </a>
-                </div>
-            </div>
-        </div>
-        
-        <div class="col-sm-6 col-md-4"> 
-            <div class="card mb-4">
-                <div class="card-body text-center">
-                    <h5 class="card-title"> Card Title </h5>
-                    <p class="card-text"> Some quick text to build up on the card title </p>
-                    <a href="#" class="card-link"> Another link </a>
-                </div>
-            </div>
-        </div>
-        
-        <div class="col-sm-6 col-md-4"> 
-            <div class="card mb-4">
-                <div class="card-body text-center">
-                    <h5 class="card-title"> Card Title </h5>
-                    <p class="card-text"> Some quick text to build up on the card title </p>
-                    <a href="#" class="card-link"> Another link </a>
-                </div>
-            </div>
-        </div>
-    </div> --}}
+    </div>
 
 </div>
 

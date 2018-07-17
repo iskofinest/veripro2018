@@ -217,7 +217,6 @@
 
     // function for logout nav
     $("#logout").on('click', function(e) {
-        
         if(confirm('Do you want to logout?')){
             window.location.href = "{{url('users/logout')}}";
         }
