@@ -22,7 +22,8 @@
 Route::get('/', 'UsersController@login');
 Route::get('/users/logout', 'UsersController@logout');
 Route::get('/home', 'HomeController@index');
-Route::get('/home/search/{searchText}/{searchField}', 'HomeController@search');
+Route::get('/home/search/{searchText1}/{fieldToSearch1}', 'HomeController@search');
+Route::get('/home/search/{searchText1}/{fieldToSearch1}/{searchText2}/{fieldToSearch2}', 'HomeController@search');
 
 Route::resource('users', 'UsersController');
 

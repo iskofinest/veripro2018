@@ -89,16 +89,41 @@ class HomeController extends Controller
     }
 
     // public function search($searchText, $fieldToSearch) {
-    public function search($searchText, $fieldToSearch) {
+    // public function search($searchText, $fieldToSearch) {
+    //     if(session('employeeid')) {
+    //         $applicants = $this->searchApplicantsBy($searchText, $fieldToSearch);
+    //         foreach($applicants as $applicant) {
+    //             $applicant->RANK = $this->getRank($applicant->APPLICANTNO);
+    //         }
+    //         $data = [
+    //             'applicants'  => $applicants,
+    //             'searchText1' => $searchText,
+    //             'fieldToSearch1' => $fieldToSearch
+    //         ];
+    //         return view('home/veripro')->with($data);
+    //     } else {
+    //         return redirect('/')->with('error', 'You must login first!!');
+    //     }
+    // }
+
+    public function search(Request $request) {
         if(session('employeeid')) {
-            $applicants = $this->searchApplicantsBy($searchText, $fieldToSearch);
+            $searchText1 = $request->searchText1;
+            $fieldToSearch1 = $request->fieldToSearch1;
+            $searchText2 = $request->searchText2;
+            $fieldToSearch2 = $request->fieldToSearch2;
+            if($searchText1 == "null") $searchText1 = "";
+            if($searchText2 == "null") $searchText2 = "";
+            $applicants = $this->searchApplicantsBy($searchText1, $fieldToSearch1, $searchText2, $fieldToSearch2);
             foreach($applicants as $applicant) {
                 $applicant->RANK = $this->getRank($applicant->APPLICANTNO);
             }
             $data = [
                 'applicants'  => $applicants,
-                'searchText' => $searchText,
-                'fieldToSearch' => $fieldToSearch
+                'searchText1' => $searchText1,
+                'fieldToSearch1' => $fieldToSearch1,
+                'searchText2' => $searchText2,
+                'fieldToSearch2' => $fieldToSearch2,
             ];
             return view('home/veripro')->with($data);
         } else {
@@ -106,13 +131,16 @@ class HomeController extends Controller
         }
     }
 
-    private function searchApplicantsBy($searchText, $fieldToSearch) {
+    private function searchApplicantsBy($searchText1, $fieldToSearch1, $searchText2, $fieldToSearch2) {
         $applicants = DB::table('crew')
             ->leftJoin('crewfasttrack', 'crewfasttrack.APPLICANTNO', '=', 'crew.APPLICANTNO')
             ->leftJoin('fasttrack', 'fasttrack.fasttrack', '=', 'crewfasttrack.FASTTRACKCODE')
             ->leftJoin('crewscholar', 'crewscholar.APPLICANTNO', '=', 'crew.APPLICANTNO')
             ->leftJoin('scholar', 'scholar.SCHOLASTICCODE', '=', 'crewscholar.SCHOLASTICCODE')
-            ->where('crew.'.$fieldToSearch, 'like', '%'.$searchText.'%')
+            ->where([
+                ['crew.'.$fieldToSearch1, 'like', '%'.$searchText1.'%'],
+                ['crew.'.$fieldToSearch2, 'like', '%'.$searchText2.'%']
+                ])
             ->select('crew.APPLICANTNO', 'crew.CREWCODE', 'crew.FNAME', 'crew.GNAME', 'crew.MNAME', 'crew.STATUS', 
             'crew.UTILITY', 'scholar.DESCRIPTION', 'fasttrack.FASTTRACK')->paginate(15);
         return $applicants;
