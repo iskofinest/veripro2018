@@ -1,5 +1,5 @@
 <nav class="navbar navbar-expand-lg navbar-dark mb-3" style="background-color: #003366;">
-    <a class="navbar-brand" href="#"> <h1> VERIPRO </h1> </a>
+    <a class="navbar-brand" href="{{url('home')}}"> <h1> VERIPRO </h1> </a>
 
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"> 
         <span class="navbar-toggler-icon"> </span>

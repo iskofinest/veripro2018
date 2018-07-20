@@ -5,12 +5,15 @@
             
                 <div class="pl-5 form-group mx-sm-3 mb-2">
                     <label class="sr-only" for="fieldToSearch1"> Select Field </label>
-                    <select class="form-control  pr-0 font-weight-bold" id="fieldToSearch1">
-                            <option value="FName">FAMILY NAME</option>
-                            <option value="CREWCODE">CREW CODE</option>
-                            <option value="APPLICANTNO">APPLICANT NO</option>
-                            <option value="GNAME">GIVEN NAME</option>
+                    <select class="form-control  pr-0 font-weight-bold" id="fieldToSearch1" onchange="field1OnChange()">
+                            <option value="crew.FName">FAMILY NAME</option>
+                            <option value="crew.CREWCODE">CREW CODE</option>
+                            <option value="crew.APPLICANTNO">APPLICANT NO</option>
+                            <option value="crew.GNAME">GIVEN NAME</option>
+                            <option value="rank.RANK">RANK</option>
+                            <option value="vessel.VESSEL">VESSEL</option>
                     </select>
+                    
                     @if(isset($fieldToSearch1))
                         <script>
                             document.getElementById('fieldToSearch1').value = "{{$fieldToSearch1}}";
@@ -26,11 +29,13 @@
                     
                 <div class="form-group mx-sm-3 mb-2">
                     <label class="sr-only" for="fieldToSearch2"> Select Field </label>
-                    <select class="form-control  pr-0 font-weight-bold" id="fieldToSearch2">
-                        <option value="FName">FAMILY NAME</option>
-                        <option value="CREWCODE">CREW CODE</option>
-                        <option value="APPLICANTNO">APPLICANT NO</option>
-                        <option value="GNAME">GIVEN NAME</option>
+                    <select class="form-control  pr-0 font-weight-bold" id="fieldToSearch2" onchange="field2OnChange()">
+                        <option value="crew.FName">FAMILY NAME</option>
+                        <option value="crew.CREWCODE">CREW CODE</option>
+                        <option value="crew.APPLICANTNO">APPLICANT NO</option>
+                        <option value="crew.GNAME">GIVEN NAME</option>
+                        <option value="rank.RANK">RANK</option>
+                        <option value="vessel.VESSEL">VESSEL</option>
                     </select>
 
                     @if(isset($fieldToSearch2))
@@ -154,18 +159,28 @@
         var searchText2 = $('#searchField2').val();
         var searchField2 = $('#fieldToSearch2').val();
         if(searchText1 === "") {
-            alert("empty searchfield 1");
             searchText1 = "null";
         }
         if(searchText2 == "") {
-            alert("empty searchfield 2");
             searchText2 = "null";
         }
         if(searchText1 != "")  {
-            alert("{{url('home/search')}}" + "/"  + searchText1 + "/" + searchField1+ "/"  + searchText2 + "/" + searchField2);
+            // alert("{{url('home/search')}}" + "/"  + searchText1 + "/" + searchField1+ "/"  + searchText2 + "/" + searchField2);
             // window.location = "{{url('home/search')}}" + "/"  + searchText1 + "/" + searchField1;
             window.location = "{{url('home/search')}}" + "/"  + searchText1 + "/" + searchField1+ "/"  + searchText2 + "/" + searchField2;
         }else  window.location = "{{url('home')}}";
+    }
+
+    function field1OnChange() {
+        if($('#searchField1').val() != "") {
+            search();
+        }
+    }
+
+    function field2OnChange() {
+        if($('#searchField2').val() != "") {
+            search();
+        }
     }
 
     function view201() {
