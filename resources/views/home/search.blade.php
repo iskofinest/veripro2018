@@ -184,7 +184,9 @@
     }
 
     function view201() {
-        window.open('/google.com');
+        var imgValue =   document.getElementById("applicantImage").src + "";
+        var applicantNo = imgValue.substring(imgValue.lastIndexOf("/")+1, imgValue.lastIndexOf("."));
+        window.open("{{url('crews')}}/" + applicantNo);
     }
 
 </script>

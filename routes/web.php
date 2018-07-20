@@ -27,4 +27,4 @@ Route::get('/home/search/{searchText1}/{fieldToSearch1}/{searchText2}/{fieldToSe
 
 Route::resource('users', 'UsersController');
 
-Route::get('/crew/{applicantNo}', 'CrewsController@show201');
+Route::get('/crews/{applicantNo}', 'CrewsController@show201');

@@ -180,6 +180,7 @@ return [
         App\Providers\ShaHashServiceProvider::class,
         \hisorange\BrowserDetect\ServiceProvider::class,
         App\Providers\PaginationServiceProvider::class,
+        App\Providers\DeveloperProviders\CrewsProvider::class,
 
     ],
 
@@ -232,6 +233,8 @@ return [
         'Form' => Collective\Html\FormFacade::class,
         'Html' => Collective\Html\HtmlFacade::class,
         'Browser' => \hisorange\BrowserDetect\Facade::class,
+        
+        'Crews' => App\Providers\DeveloperProviders\CrewsProvider::class,
 
     ],
 
