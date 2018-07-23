@@ -11,10 +11,18 @@ class HomeController extends Controller
     public function index(Request $request) {
     
         if(session('employeeid')) {
-            $accessLevel = DB::select("SELECT al.MENU, a.accessid FROM access a LEFT JOIN accessLevels al ON a.ACCESSID=al.ACCESSID WHERE a.EMPLOYEEID=? ORDER BY al.POSITION", array(session('employeeid')));
+            // $accessLevel = DB::select("SELECT al.MENU, a.accessid FROM access a LEFT JOIN accessLevels al ON a.ACCESSID=al.ACCESSID WHERE a.EMPLOYEEID=? ORDER BY al.POSITION", array(session('employeeid')));
+            $accessLevel = DB::table('access')
+                    ->leftJoin('accessLevels', 'access.ACCESSID', '=', 'accessLevels.ACCESSID')
+                    ->where('access.EMPLOYEEID', session('employeeid'))
+                    ->orderby('accessLevels.POSITION')->get();
             foreach($accessLevel as $access) {
                 $accessLevels[$access->MENU] = 
                     DB::select("SELECT submenu1, submenu2, submenu3 FROM accessLevels WHERE menu=? AND accessid IN (SELECT accessid FROM access WHERE employeeid=?)", array($access->MENU, session('employeeid')));  
+                // $accessLevels[$access->MENU] = DB::table('accessLevels')
+                //     ->where('accessLevels.menu', $access->MENU)
+                //     ->wherein(DB::select("SELECT accessid FROM access WHERE employeeid=?", array(session('employeeid'))))
+                //     ->get();
             }
             if(isset($accessLevels)){
                 session()->put('accessLevels', $accessLevels);
@@ -44,10 +52,15 @@ class HomeController extends Controller
                     ->where('crewchange.DATEEMB', DB::raw("(select max(crewchange.DATEEMB) from crewchange where crewchange.APPLICANTNO = crew.APPLICANTNO )"))
                     ->groupby('crewchange.APPLICANTNO');
             })
-            // ->leftJoin('crewchange', 'crewchange.APPLICANTNO', '=', 'crew.APPLICANTNO')
             ->leftJoin('rank', 'rank.RANKCODE', '=', 'crewchange.RANKCODE')
+            ->leftJoin('vessel', function ($join) {
+                $join->on('vessel.VESSELCODE', '=', 'crewchange.VESSELCODE')
+                    ->whereNull('crewchange.ARRMNLDATE')
+                    ->whereNull('crewchange.DISEMBREASONCODE')
+                    ->whereNull('crewchange.DEPMNLDATE');
+            })
             ->select('crew.APPLICANTNO', 'crew.CREWCODE', 'crew.FNAME', 'crew.GNAME', 'crew.MNAME', 'crew.STATUS', 
-            'crew.UTILITY', 'scholar.DESCRIPTION', 'fasttrack.FASTTRACK', 'rank.RANK')->paginate(15);
+            'crew.UTILITY', 'scholar.DESCRIPTION', 'fasttrack.FASTTRACK', 'rank.RANK', 'vessel.VESSEL')->paginate(15);
         return $applicants;
     }
 
@@ -74,12 +87,6 @@ class HomeController extends Controller
     }
 
     private function searchApplicantsBy($searchText1, $fieldToSearch1, $searchText2, $fieldToSearch2) {
-        // $crewchange = DB::select('select c.APPLICANTNO, max(c.DATEEMB) as max_date from crewchange c group by c.applicantno ORDER BY c.APPLICANTNO');
-        $crewchange = DB::table('crewchange')
-                   ->select('APPLICANTNO', DB::raw('MAX(DATEEMB) as DATEEMB'))
-                   ->groupBy('APPLICANTNO');
-
-        // dd($crewchange);
 
         $applicants = DB::table('crew')
             ->leftJoin('crewfasttrack', 'crewfasttrack.APPLICANTNO', '=', 'crew.APPLICANTNO')
@@ -94,7 +101,6 @@ class HomeController extends Controller
             ->leftJoin('rank', 'rank.RANKCODE', '=', 'crewchange.RANKCODE')
             ->leftJoin('vessel', function ($join) {
                 $join->on('vessel.VESSELCODE', '=', 'crewchange.VESSELCODE')
-                    // ->where('crewchange.DATEEMB', DB::raw("(select max(crewchange.DATEEMB) from crewchange where crewchange.APPLICANTNO = crew.APPLICANTNO )"))
                     ->whereNull('crewchange.ARRMNLDATE')
                     ->whereNull('crewchange.DISEMBREASONCODE')
                     ->whereNull('crewchange.DEPMNLDATE');
@@ -104,7 +110,7 @@ class HomeController extends Controller
                     [$fieldToSearch2, 'like', '%'.$searchText2.'%'],
                 ])
             ->select('crew.APPLICANTNO', 'crew.CREWCODE', 'crew.FNAME', 'crew.GNAME', 'crew.MNAME', 'crew.STATUS', 
-            'crew.UTILITY', 'scholar.DESCRIPTION', 'fasttrack.FASTTRACK', 'rank.RANK')->paginate(15);
+            'crew.UTILITY', 'scholar.DESCRIPTION', 'fasttrack.FASTTRACK', 'rank.RANK', 'vessel.VESSEL')->paginate(15);
         return $applicants;
     }
 

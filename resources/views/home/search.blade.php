@@ -1,4 +1,5 @@
 <div class="row">
+    
         <section class="col-sm-9 col-md-9">
 
             <div class="form-inline " style="width: 1000px">
@@ -49,7 +50,10 @@
                             value="{{$searchText2}}"
                         @endif
                     placeholder="Search" required style="width: 300px; text-transform: uppercase" name="searchField2">
+                    
                 </div>
+
+
             </div> <!-- div form-inline close tag -->
         
             <table class="table table-hover">
@@ -62,13 +66,14 @@
                             <th>MNAME</th>
                             <th>RANK</th>
                             <th>STATUS</th>
+                            <th>VESSEL</th>
                     </tr>
                 </thead>
                 
                 <tbody>
                     @if(count($applicants) > 0)
                         @foreach($applicants as $applicant)
-                            <tr style="cursor: pointer;" role="button" onclick="chooseApplicant({{$applicant->APPLICANTNO}})">
+                            <tr style="cursor: pointer;" role="button" id="{{$applicant->APPLICANTNO}}" onclick="chooseApplicant({{$applicant->APPLICANTNO}})">
                                 <td>{{$applicant->APPLICANTNO}}</td>
                                 <td>{{$applicant->CREWCODE}}</td>
                                 <td>{{$applicant->FNAME}}</td>
@@ -80,6 +85,9 @@
                                 @else
                                     <td> {{$applicant->DESCRIPTION}} {{$applicant->FASTTRACK}} {{$applicant->UTILITY}}</td>
                                 @endif
+                                {{-- @if(isset($applicant->VESSEL)) --}}
+                                    <td>{{$applicant->VESSEL}}</td> 
+                                {{-- @endif --}}
                             </tr>
                         @endforeach
                     @endif
@@ -125,18 +133,25 @@
 
 <script>
 
-    var chosenApplicant = "";
+    var chosenApplicant;
 
     function initializeData(applicantNo) {
 
     }
 
     function chooseApplicant(applicantNo) {
-        chosenApplicant = applicantNo;
         var url = "{{asset('storage/idpics/')}}/" + applicantNo + ".JPG";
         $("#applicantImage").attr("src", url).on("error", function(){
             $("#applicantImage").attr("src",   "{{asset('storage/idpics/')}}/no_image.jpg");
         });
+        try {
+            document.getElementById(chosenApplicant).className = "";
+        } catch(error) {
+        } finally {
+            document.getElementById(applicantNo).className = "bg-primary";
+            chosenApplicant = applicantNo;
+        }
+        
     }
 
     // functions for search 
