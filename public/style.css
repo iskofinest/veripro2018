@@ -1,3 +1,13 @@
 .dropdown-menu .dropdown-item:hover{
     background: lightblue;
 }
+
+.custom-list-partial { 
+    border: 1px solid white;
+    border-top: 1px solid rgb(155, 148, 148);
+}
+
+.custom-list-full { 
+    border: 1px solid white;
+    border-bottom: 1px solid rgb(155, 148, 148);
+}
