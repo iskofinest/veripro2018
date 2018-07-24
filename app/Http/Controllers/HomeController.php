@@ -56,7 +56,7 @@ class HomeController extends Controller
             ->leftJoin('vessel', function ($join) {
                 $join->on('vessel.VESSELCODE', '=', 'crewchange.VESSELCODE')
                     ->whereNull('crewchange.ARRMNLDATE')
-                    ->whereNull('crewchange.DISEMBREASONCODE')
+                    ->whereNull('crewchange.DATEDISEMB')
                     ->whereNull('crewchange.DEPMNLDATE');
             })
             ->select('crew.APPLICANTNO', 'crew.CREWCODE', 'crew.FNAME', 'crew.GNAME', 'crew.MNAME', 'crew.STATUS', 

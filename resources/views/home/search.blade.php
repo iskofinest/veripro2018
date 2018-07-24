@@ -17,7 +17,7 @@
                     
                     @if(isset($fieldToSearch1))
                         <script>
-                            document.getElementById('fieldToSearch1').value = "{{$fieldToSearch1}}";
+                            document.getElementById('fieldToSearch1').value = {{$fieldToSearch1}};
                         </script>
                     @endif
                     <label class="sr-only" for="searchField1"> Search </label>
@@ -56,7 +56,7 @@
 
             </div> <!-- div form-inline close tag -->
         
-            <table class="table table-hover">
+            <table class="table table-hover" id="mytable">
                 <thead class="thead-dark ">
                     <tr>
                             <th>APP. NO</th>
@@ -133,23 +133,22 @@
 
 <script>
 
-    var chosenApplicant;
-
-    function initializeData(applicantNo) {
-
-    }
+    var previous;
+    var chosenApplicant = document.getElementById('mytable').rows[1].id;
 
     function chooseApplicant(applicantNo) {
+        chosenApplicant = applicantNo;
+        // alert(chosenApplicant);
         var url = "{{asset('storage/idpics/')}}/" + applicantNo + ".JPG";
         $("#applicantImage").attr("src", url).on("error", function(){
             $("#applicantImage").attr("src",   "{{asset('storage/idpics/')}}/no_image.jpg");
         });
         try {
-            document.getElementById(chosenApplicant).className = "";
+            document.getElementById(previous).className = "";
         } catch(error) {
         } finally {
             document.getElementById(applicantNo).className = "bg-primary";
-            chosenApplicant = applicantNo;
+            previous = applicantNo;
         }
         
     }
@@ -199,9 +198,15 @@
     }
 
     function view201() {
-        var imgValue =   document.getElementById("applicantImage").src + "";
-        var applicantNo = imgValue.substring(imgValue.lastIndexOf("/")+1, imgValue.lastIndexOf("."));
-        window.open("{{url('crews')}}/" + applicantNo);
+    //     // alert(document.getElementById('mytable').rows[1].id);
+    //     // var imgValue =   document.getElementById("applicantImage").src + "";
+    //     // var applicantNo = imgValue.substring(imgValue.lastIndexOf("/")+1, imgValue.lastIndexOf("."));
+    //     if(chosenApplicant == "") 
+    //         chosenApplicant = document.getElementById('mytable').rows[1].id;
+    //     }
+        window.open("{{url('crews')}}/" + chosenApplicant);
     }
+
+    // alert(document.getElementById('mytable').rows[1].id);
 
 </script>
