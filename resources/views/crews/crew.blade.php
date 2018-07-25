@@ -65,17 +65,6 @@
                                     </div> <!-- APPLICANT RANK ROW -->
                                 </li> <!-- END RANK LIST ITEM -->
 
-                                {{-- <li class="list-group-item custom-list-partial"> <!-- START ADDRESS LIST ITEM -->
-                                    <div class="row"> <!-- APPLICANT ADDRESS ROW -->
-                                        <div class="col-sm-3 col-md-3 pr-0 pl-0 text-right align-self-center">
-                                            <strong>ADDRESS:</strong>
-                                        </div>
-                                        <div class="col-sm-9 col-md-9 text-left pr-0">
-                                            {{$address}} 
-                                        </div>
-                                    </div> <!-- APPLICANT ADDRESS ROW -->
-                                </li> <!-- END ADDRESS LIST ITEM --> --}}
-
                             </ul> <!-- END LIST WITH 9 COLUMN CLASS -->
                             
                         </div> <!-- END DIV WITH 9 COLUMN CLASS -->
@@ -88,15 +77,7 @@
                             <img id="applicantImage" class="col-sm-3 col-md-3 mr-0 pr-0"
                             src={{asset('storage/idpics/no_image.JPG')}}
                             style="border: 1px solid black;" height="150px" width = "150px">
-
-                            {{-- <h5 class="card-title text-center"> <img id="applicantImage" 
-                            src={{asset('storage/idpics/no_image.JPG')}}
-                            style="border: 1px solid black;" height="250px" width = "250px"> </h5> --}}
                         @endif
-
-                            {{-- <img id="applicantImage" class="col-sm-3 col-md-3 mr-0 pr-0"
-                                src={{asset('storage/idpics/'.$crewDetails->APPLICANTNO.'.JPG')}}
-                                style="border: 1px solid black;" height="150px" width = "150px"> --}}
                         
                     </div> <!-- row with image -->
 
@@ -311,57 +292,134 @@
                                 <div class="col-sm-12 col-md-12"> <!-- START COLUMNS FOR 3ND ROW -->
 
                                     <ul class="list-group"> <!-- START LIST GROUP -->
-                        
-                                        <li class="list-group-item custom-list-full pr-0" > <!-- START 1ST LIST GROUP ITEM FOR 3RD ROW -->
-                                            <div class="row"> <!-- APPLICANT VESSEL AND NEXT LINE UP ROW -->
-                                                <div class="col-sm-2 col-md-2 pr-0 pl-0 text-right">
-                                                    <strong>PRESENT VESSEL:</strong>
-                                                </div>
-                                                <div class="col-sm-4 col-md-4 text-left pr-0">
-                                                    {{$crewDetails->VESSEL}} 
-                                                </div>
-                                                <div class="col-sm-2 col-md-2 pr-0 pl-0 text-right">
-                                                    <strong>NEXT LINE UP:</strong>
-                                                </div>
-                                                <div class="col-sm-4 col-md-4 text-left pr-0">
-                                                    --------
-                                                </div> 
-                                            </div> <!-- APPLICANT VESSEL AND NEXT LINE UP ROW -->
-                                        </li> <!-- END 1ST LIST GROUP ITEM FOR 3RD ROW -->
-                        
-                                        <li class="list-group-item custom-list-full pr-0" > <!-- START 2ND LIST GROUP ITEM FOR 3RD ROW -->
-                                            <div class="row"> <!-- APPLICANT EMBARKED AND RANK ROW -->
-                                                <div class="col-sm-2 col-md-2 pr-0 pl-0 text-right">
-                                                    <strong>EMBARKED:</strong>
-                                                </div>
-                                                <div class="col-sm-4 col-md-4 text-left pr-0">
-                                                    {{$crewDetails->DATEEMB}} 
-                                                </div>
-                                                <div class="col-sm-2 col-md-2 pr-0 pl-0 text-right">
-                                                    <strong>RANK:</strong>
-                                                </div>
-                                                <div class="col-sm-4 col-md-4 text-left pr-0">
-                                                    {{$crewDetails->RANK}} 
-                                                </div> 
-                                            </div> <!-- APPLICANT EMBARK AND RANK ROW -->
-                                        </li> <!-- END 2ND LIST GROUP ITEM FOR 3RD ROW -->
-                        
-                                        <li class="list-group-item custom-list-full pr-0" > <!-- START 3RD LIST GROUP ITEM FOR 3RD ROW -->
-                                            <div class="row"> <!-- APPLICANT END OF CONTRACT AND ETD ROW -->
-                                                <div class="col-sm-2 col-md-2 pr-0 pl-0 text-right">
-                                                    <strong>END OF CONTRACT:</strong>
-                                                </div>
-                                                <div class="col-sm-4 col-md-4 text-left pr-0">
-                                                    {{$datedisemb}} 
-                                                </div>
-                                                <div class="col-sm-2 col-md-2 pr-0 pl-0 text-right">
-                                                    <strong>ETD:</strong>
-                                                </div>
-                                                <div class="col-sm-4 col-md-4 text-left pr-0">
-                                                    {{$crewstatus}} 
-                                                </div> 
-                                            </div> <!-- APPLICANT END OF CONTRACT AND ETD ROW -->
-                                        </li> <!-- END 3RD LIST GROUP ITEM FOR 3RD ROW -->
+
+                                        @if($crewstatus == 'ONBOARD')
+                                            <li class="list-group-item custom-list-full pr-0" > <!-- START 1ST LIST GROUP ITEM FOR 3RD ROW -->
+                                                <div class="row"> <!-- APPLICANT VESSEL AND NEXT LINE UP ROW -->
+                                                    <div class="col-sm-2 col-md-2 pr-0 pl-0 text-right">
+                                                        <strong>PRESENT VESSEL:</strong>
+                                                    </div>
+                                                    <div class="col-sm-4 col-md-4 text-left pr-0">
+                                                        {{$crewDetails->VESSEL}} 
+                                                    </div>
+                                                    <div class="col-sm-2 col-md-2 pr-0 pl-0 text-right">
+                                                        <strong>NEXT LINE UP:</strong>
+                                                    </div>
+                                                    <div class="col-sm-4 col-md-4 text-left pr-0">
+                                                        --------
+                                                    </div> 
+                                                </div> <!-- APPLICANT VESSEL AND NEXT LINE UP ROW -->
+                                            </li> <!-- END 1ST LIST GROUP ITEM FOR 3RD ROW -->
+                            
+                                            <li class="list-group-item custom-list-full pr-0" > <!-- START 2ND LIST GROUP ITEM FOR 3RD ROW -->
+                                                <div class="row"> <!-- APPLICANT EMBARKED AND RANK ROW -->
+                                                    <div class="col-sm-2 col-md-2 pr-0 pl-0 text-right">
+                                                        <strong>EMBARKED:</strong>
+                                                    </div>
+                                                    <div class="col-sm-4 col-md-4 text-left pr-0">
+                                                        {{$crewDetails->DATEEMB}} 
+                                                    </div>
+                                                    <div class="col-sm-2 col-md-2 pr-0 pl-0 text-right">
+                                                        <strong>RANK:</strong>
+                                                    </div>
+                                                    <div class="col-sm-4 col-md-4 text-left pr-0">
+                                                        
+                                                    </div> 
+                                                </div> <!-- APPLICANT EMBARK AND RANK ROW -->
+                                            </li> <!-- END 2ND LIST GROUP ITEM FOR 3RD ROW -->
+                            
+                                            <li class="list-group-item custom-list-full pr-0" > <!-- START 3RD LIST GROUP ITEM FOR 3RD ROW -->
+                                                <div class="row"> <!-- START OF CONTRACT AND ETD ROW -->
+                                                    <div class="col-sm-2 col-md-2 pr-0 pl-0 text-right">
+                                                        <strong>END OF CONTRACT:</strong>
+                                                    </div>
+                                                    <div class="col-sm-4 col-md-4 text-left pr-0">
+                                                        {{$datedisemb}} 
+                                                    </div>
+                                                    <div class="col-sm-2 col-md-2 pr-0 pl-0 text-right">
+                                                        <strong>ETD:</strong>
+                                                    </div>
+                                                    <div class="col-sm-4 col-md-4 text-left pr-0">
+                                                        
+                                                    </div> 
+                                                </div> <!-- APPLICANT END OF CONTRACT AND ETD ROW -->
+                                            </li> <!-- END 3RD LIST GROUP ITEM FOR 3RD ROW -->
+                    
+                                            <li class="list-group-item custom-list-full pr-0" > <!-- START 4th LIST GROUP ITEM FOR 3RD ROW -->
+                                                <div class="row"> <!--  END OF CONTRACT AND ETD ROW -->
+                                                    <div class="col-sm-6 col-md-6 pr-0 pl-0 text-right">
+                                                        <strong>STATUS:</strong>
+                                                    </div>
+                                                    <div class="col-sm-6 col-md-6 text-left pr-0">
+                                                        {{$crewstatus}} 
+                                                    </div>
+                                                </div> <!--  END OF CONTRACT AND ETD ROW -->
+                                            </li> <!-- END 4th LIST GROUP ITEM FOR 3RD ROW -->
+                                        @elseif($crewstatus == 'STANDBY (LINE UP)' || $crewstatus == 'EMBARKING')
+                                            or
+                                        @else   
+                                            <li class="list-group-item custom-list-full pr-0" > <!-- START 1ST LIST GROUP ITEM FOR 3RD ROW -->
+                                                <div class="row"> <!-- APPLICANT VESSEL AND NEXT LINE UP ROW -->
+                                                    <div class="col-sm-2 col-md-2 pr-0 pl-0 text-right">
+                                                        <strong>LAST VESSEL:</strong>
+                                                    </div>
+                                                    <div class="col-sm-4 col-md-4 text-left pr-0">
+                                                        {{$crewDetails->VESSEL}} 
+                                                    </div>
+                                                    <div class="col-sm-2 col-md-2 pr-0 pl-0 text-right">
+                                                        <strong>NEXT LINE UP:</strong>
+                                                    </div>
+                                                    <div class="col-sm-4 col-md-4 text-left pr-0">
+                                                        --------
+                                                    </div> 
+                                                </div> <!-- APPLICANT VESSEL AND NEXT LINE UP ROW -->
+                                            </li> <!-- END 1ST LIST GROUP ITEM FOR 3RD ROW -->
+                            
+                                            <li class="list-group-item custom-list-full pr-0" > <!-- START 2ND LIST GROUP ITEM FOR 3RD ROW -->
+                                                <div class="row"> <!-- APPLICANT EMBARKED AND RANK ROW -->
+                                                    <div class="col-sm-2 col-md-2 pr-0 pl-0 text-right">
+                                                        <strong>EMBARKED:</strong>
+                                                    </div>
+                                                    <div class="col-sm-4 col-md-4 text-left pr-0">
+                                                        {{$crewDetails->DATEEMB}} 
+                                                    </div>
+                                                    <div class="col-sm-2 col-md-2 pr-0 pl-0 text-right">
+                                                        <strong>RANK:</strong>
+                                                    </div>
+                                                    <div class="col-sm-4 col-md-4 text-left pr-0">
+                                                        
+                                                    </div> 
+                                                </div> <!-- APPLICANT EMBARK AND RANK ROW -->
+                                            </li> <!-- END 2ND LIST GROUP ITEM FOR 3RD ROW -->
+                            
+                                            <li class="list-group-item custom-list-full pr-0" > <!-- START 3RD LIST GROUP ITEM FOR 3RD ROW -->
+                                                <div class="row"> <!-- START OF CONTRACT AND ETD ROW -->
+                                                    <div class="col-sm-2 col-md-2 pr-0 pl-0 text-right">
+                                                        <strong>END OF CONTRACT:</strong>
+                                                    </div>
+                                                    <div class="col-sm-4 col-md-4 text-left pr-0">
+                                                        {{$datedisemb}} 
+                                                    </div>
+                                                    <div class="col-sm-2 col-md-2 pr-0 pl-0 text-right">
+                                                        <strong>ETD:</strong>
+                                                    </div>
+                                                    <div class="col-sm-4 col-md-4 text-left pr-0">
+                                                        {{$crewstatus}} 
+                                                    </div> 
+                                                </div> <!-- APPLICANT END OF CONTRACT AND ETD ROW -->
+                                            </li> <!-- END 3RD LIST GROUP ITEM FOR 3RD ROW -->
+                    
+                                            <li class="list-group-item custom-list-full pr-0" > <!-- START 4th LIST GROUP ITEM FOR 3RD ROW -->
+                                                <div class="row"> <!--  END OF CONTRACT AND ETD ROW -->
+                                                    <div class="col-sm-6 col-md-6 pr-0 pl-0 text-right">
+                                                        <strong>STATUS:</strong>
+                                                    </div>
+                                                    <div class="col-sm-6 col-md-6 text-left pr-0">
+                                                        {{$crewstatus}} 
+                                                    </div>
+                                                </div> <!--  END OF CONTRACT AND ETD ROW -->
+                                            </li> <!-- END 4th LIST GROUP ITEM FOR 3RD ROW -->
+                                        @endif
                 
                                     </ul> <!-- END LIST GROUP -->
 
@@ -373,28 +431,6 @@
                     </div> <!-- END 2ND ROW COLUMN CLASS -->
                 </div> <!-- div title card-body -->
             </div> <!-- div title card -->
-
-            {{-- <div class="row"> <!--  -->
-
-                <div class="col-sm-12 col-md-12"> <!--  -->
-
-                    <ul class="list-group" > <!--  -->
-                
-                        <li class="list-group-item custom-list-full pr-0" > <!--  -->
-                            <div class="row pl-3"> <!--  -->
-                                <div class="col-sm-2 col-md-2 pr-0 pl-0 text-right">
-
-                                </div>
-
-                            </div>
-                        </li>
-
-                    </ul>
-
-                </div>
-
-            </div> --}}
-
 
         </div> <!-- column -->
         <div class="col-sm-6 col-md-6">
