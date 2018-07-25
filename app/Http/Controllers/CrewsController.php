@@ -7,13 +7,13 @@ use DB;
 
 class CrewsController extends Controller
 {
-    
+    private $crewDetails;
     public function show201($applicantNo) {
         if(session('employeeid')) {
             $crewDetails = $this->findCrewByApplicantNo($applicantNo);
-            $personalweight = $crewDetails->WEIGHT;
+            $personalweight = (empty($crewDetails->WEIGHT) ) ? 0 : $crewDetails->WEIGHT;
             $personalheight = $crewDetails->HEIGHT;
-            $personaldmbweight = $crewDetails->DMBWEIGHT;
+            $personaldmbweight = (empty($crewDetails->DMBWEIGHT) ) ? 0 : $crewDetails->DMBWEIGHT;
             $datetimenow=date("Y-m-d H:i:s");
             $data = [
                 'crewDetails'  => $crewDetails,
@@ -27,7 +27,8 @@ class CrewsController extends Controller
                 'age' => floor((strtotime($datetimenow) - strtotime($crewDetails->BIRTHDATE)) / (86400*365.25)),
                 'gender' => ($crewDetails->GENDER == 'M') ?'MALE' : 'FEMALE',
                 'civilStatus' => $this->getCivilStatus($crewDetails->CIVILSTATUS),
-                'crewstatus' =>  $this->getCrewStatus($crewDetails)
+                'crewstatus' =>  $this->getCrewStatus($crewDetails),
+                'datedisemb' => ($crewDetails->DATECHANGEDISEMB == '') ? $crewDetails->DATEDISEMB:$crewDetails->DATECHANGEDISEMB
             ];
             return view('crews/crew')->with($data);
         } else return redirect('/')->with('error', 'You must login first!!');
@@ -67,7 +68,8 @@ class CrewsController extends Controller
                 'crew.BIRTHPLACE', 'crew.GENDER', 'crew.CIVILSTATUS', 'crew.RELIGION', 'crew.SSS', 'crew.TIN', 'crew.PHILHEALTH', 
                 'crew.PAGIBIG', 'crew.DMBWEIGHT', 'crew.WEIGHT', 'crew.HEIGHT', 'crew.NEXTOFKIN', 'crew.STATUS', 'crew.CIVILSTATUS', 
                 'crew.RECOMMENDEDBY AS crewRecomended', 
-                'crewchange.DATEEMB', 'crewchange.ARRMNLDATE', 'crewchange.CONFIRMDEPDATE',
+                'crewchange.DATEEMB', 'crewchange.DATECHANGEDISEMB', 'crewchange.DATEDISEMB', 'crewchange.CONFIRMDEPDATE', 
+                'crewchange.ARRMNLDATE',
                 'crewdocstatus.DOCCODE', 
                 'creweducation.SCHOOLOTHERS', 'creweducation.COURSEID', 'creweducation.COURSEOTHERS', 'creweducation.SCHOOLID',
                 'applicant.RECOMMENDEDBY AS applicantRecomended',
@@ -126,35 +128,71 @@ class CrewsController extends Controller
     }
 
     private function getBmi($weight, $height) {
-        if($weight != ''){
-            $bmi123 = $weight / (($height/100) * ($height/100));
-            $bmi1 = round($bmi123, 0);
-          if($bmi1 == '' || $weight == '') $bmi = '';
-          else if($bmi1 >= '0' && $bmi1 <= '18'){ 
-                 $bmi = 'Underweight '.'('.$bmi1.')';
-          } else if ($bmi1 >= '19' && $bmi1 <= '24'){
-                 $bmi = 'Normal '.'('.$bmi1.')'; 
-          } else if ($bmi1 >= '25' && $bmi1 <= '29'){
-                 $bmi = 'Overweight '.'('.$bmi1.')';   
-          } else if ($bmi1 >= '30' && $bmi1 <= '34'){
-                 $bmi = 'Obesity I '.'('.$bmi1.')';   
-          } else if ($bmi1 >= '35' && $bmi1 <= '39'){
-                 $bmi = 'Obesity II '.'('.$bmi1.')';
-          } else if ($bmi1 >= '40'){
-                 $bmi = 'Obesity III '.'('.$bmi1.')';  
-        }} else $bmi = '';
+        try {
+            if($weight != ''){
+                $bmi123 = $weight / (($height/100) * ($height/100));
+                $bmi1 = round($bmi123, 0);
+              if($bmi1 == '' || $weight == '') $bmi = '';
+              else if($bmi1 >= '0' && $bmi1 <= '18'){ 
+                     $bmi = 'Underweight '.'('.$bmi1.')';
+              } else if ($bmi1 >= '19' && $bmi1 <= '24'){
+                     $bmi = 'Normal '.'('.$bmi1.')'; 
+              } else if ($bmi1 >= '25' && $bmi1 <= '29'){
+                     $bmi = 'Overweight '.'('.$bmi1.')';   
+              } else if ($bmi1 >= '30' && $bmi1 <= '34'){
+                     $bmi = 'Obesity I '.'('.$bmi1.')';   
+              } else if ($bmi1 >= '35' && $bmi1 <= '39'){
+                     $bmi = 'Obesity II '.'('.$bmi1.')';
+              } else if ($bmi1 >= '40'){
+                     $bmi = 'Obesity III '.'('.$bmi1.')';  
+            }} else $bmi = '';
+          }
+          catch (Exception $e) {
+              return 'NA';
+              return $e->getMessage();
+          }
         return $bmi;
     }
 
     private function getCrewStatus($crewDetails) {
 
-        if(empty($crewDetails->ARRMNLDATE)) {
-            $crewStatus = "ON BOARD";
+        $datetimenow=date("Y-m-d H:i:s");
+        
+        $dateDisembarked = ($crewDetails->DATECHANGEDISEMB == '') ? $crewDetails->DATEDISEMB:$crewDetails->DATECHANGEDISEMB;
+        if($crewDetails->DATEEMB == '' && $dateDisembarked == '') {
+            $crewStatus = 'STANDBY';    // IF NEWLY HIRED AND NOT SCHEDULED AT ALL
         } else {
-            $crewStatus = "STAND BY";
+            if(strtotime($crewDetails->DATEEMB) > strtotime($datetimenow)) {    // IF HAS SCHEDLUED EMBARKMENT
+                // COUNT HOW MANY DAYS DIFFER
+                $dateEmbarkmentDifference = dateDifference($crewDetails->DATEEMB);
+                if($dateEmbarkmentDifference <= 90 && $dateEmbarkmentDifference > 0) { // IF EMBARKMENT HAS LESS THAN 3 MONTHS
+                    $crewStatus = 'EMBARKING';
+                } else if($dateEmbarkmentDifference > 90) {   // IF EMBARKMENT IS BEYOND 3 MONTHS BUT LESS THAN 1 YEAR
+                    $crewStatus = 'STANDBY (LINE UP)';
+                }
+            } else { // IF EMBARKMENT IS ALREADY EXECUTED
+                if(strtotime($dateDisembarked) > strtotime($datetimenow)) {     // IF ON BOARD AND NOT ALREADY DISEMBARKED
+                    $crewStatus = 'ONBOARD';
+                } else {                                                        // IF ALREADY DISEMBARKED
+                    $dateDisembarkmentDifference = $this->dateDifference($dateDisembarked); 
+                    if($dateDisembarkmentDifference > 365) {    // IF MORE THAN 1 YEAR DISEMBARKED AND NO SCHEDULED EMBARKMENT
+                        $crewStatus = 'INACTIVE';
+                    } else {                                    // IF LESS THAN 1 YEAR DISEMBARKED AND NO SCHEDULED EMBARKMENT
+                        $crewStatus = 'STANDBY';
+                    }
+                }
+            }
         }
 
         return $crewStatus;
+    }
+
+    function dateDifference($date_2) {
+        $datetimenow=date("Y-m-d H:i:s");
+        $current_date = date_create($datetimenow);
+        $embark_date = date_create($date_2);
+        $interval = date_diff($embark_date, $current_date);
+        return $interval->format('%a');
     }
 
 }

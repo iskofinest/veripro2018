@@ -65,7 +65,7 @@
                                     </div> <!-- APPLICANT RANK ROW -->
                                 </li> <!-- END RANK LIST ITEM -->
 
-                                <li class="list-group-item custom-list-partial"> <!-- START ADDRESS LIST ITEM -->
+                                {{-- <li class="list-group-item custom-list-partial"> <!-- START ADDRESS LIST ITEM -->
                                     <div class="row"> <!-- APPLICANT ADDRESS ROW -->
                                         <div class="col-sm-3 col-md-3 pr-0 pl-0 text-right align-self-center">
                                             <strong>ADDRESS:</strong>
@@ -74,15 +74,29 @@
                                             {{$address}} 
                                         </div>
                                     </div> <!-- APPLICANT ADDRESS ROW -->
-                                </li> <!-- END ADDRESS LIST ITEM -->
+                                </li> <!-- END ADDRESS LIST ITEM --> --}}
 
                             </ul> <!-- END LIST WITH 9 COLUMN CLASS -->
                             
                         </div> <!-- END DIV WITH 9 COLUMN CLASS -->
 
+                        @if(file_exists('storage/idpics/'.$crewDetails->APPLICANTNO.'.JPG')) 
                             <img id="applicantImage" class="col-sm-3 col-md-3 mr-0 pr-0"
+                            src={{asset('storage/idpics/'.$crewDetails->APPLICANTNO.'.JPG')}}
+                            style="border: 1px solid black;" height="150px" width = "150px">
+                        @else
+                            <img id="applicantImage" class="col-sm-3 col-md-3 mr-0 pr-0"
+                            src={{asset('storage/idpics/no_image.JPG')}}
+                            style="border: 1px solid black;" height="150px" width = "150px">
+
+                            {{-- <h5 class="card-title text-center"> <img id="applicantImage" 
+                            src={{asset('storage/idpics/no_image.JPG')}}
+                            style="border: 1px solid black;" height="250px" width = "250px"> </h5> --}}
+                        @endif
+
+                            {{-- <img id="applicantImage" class="col-sm-3 col-md-3 mr-0 pr-0"
                                 src={{asset('storage/idpics/'.$crewDetails->APPLICANTNO.'.JPG')}}
-                                style="border: 1px solid black;" height="200px" width = "200px">
+                                style="border: 1px solid black;" height="150px" width = "150px"> --}}
                         
                     </div> <!-- row with image -->
 
@@ -91,6 +105,17 @@
                         <div class="col-sm-12 col-md-12"> <!-- START COLUMNS FOR 2ND ROW -->
 
                             <ul class="list-group" > <!-- START LIST FOR 2ND ROW -->
+
+                                <li class="list-group-item custom-list-partial"> <!-- START ADDRESS LIST ITEM -->
+                                    <div class="row ml-1"> <!-- APPLICANT ADDRESS ROW -->
+                                        <div class="col-sm-2 col-md-2 pr-0 pl-0  text-right align-self-center">
+                                            <strong>ADDRESS:</strong>
+                                        </div>
+                                        <div class="col-sm-10 col-md-10 text-left pr-0">
+                                            {{$address}} 
+                                        </div>
+                                    </div> <!-- APPLICANT ADDRESS ROW -->
+                                </li> <!-- END ADDRESS LIST ITEM -->
                         
                                 <li class="list-group-item custom-list-full pr-0" > <!-- START 1ST LIST GROUP ITEM FOR 2ND ROW -->
                                     <div class="row pl-3"> <!-- APPLICANT CONTACT ROW -->
@@ -327,7 +352,7 @@
                                                     <strong>END OF CONTRACT:</strong>
                                                 </div>
                                                 <div class="col-sm-4 col-md-4 text-left pr-0">
-                                                    {{$crewDetails->ARRMNLDATE}} 
+                                                    {{$datedisemb}} 
                                                 </div>
                                                 <div class="col-sm-2 col-md-2 pr-0 pl-0 text-right">
                                                     <strong>ETD:</strong>

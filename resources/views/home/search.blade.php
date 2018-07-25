@@ -56,7 +56,7 @@
 
             </div> <!-- div form-inline close tag -->
         
-            <table class="table table-hover" id="mytable">
+            <table class="table table-hover" id="crewsTable">
                 <thead class="thead-dark ">
                     <tr>
                             <th>APP. NO</th>
@@ -85,9 +85,7 @@
                                 @else
                                     <td> {{$applicant->DESCRIPTION}} {{$applicant->FASTTRACK}} {{$applicant->UTILITY}}</td>
                                 @endif
-                                {{-- @if(isset($applicant->VESSEL)) --}}
                                     <td>{{$applicant->VESSEL}}</td> 
-                                {{-- @endif --}}
                             </tr>
                         @endforeach
                     @endif
@@ -113,7 +111,7 @@
                     {{-- @endif --}}
                         
                     <div class="row m-3">
-                        <button type="button" class="col col-12 btn btn-primary mb-2" onclick="view201()">201 Profile</button>
+                        <button type="button" class="col col-12 btn btn-primary mb-2" onclick="view201()" id='view201'>201 Profile</button>
                         <button type="button" class="col col-12 btn btn-primary mb-2">Debriefing</button>
                         <button type="button" class="col col-12 btn btn-primary mb-2">Withdrawal</button>
                         <button type="button" class="col col-12 btn btn-primary mb-2">Training</button>
@@ -134,7 +132,12 @@
 <script>
 
     var previous;
-    var chosenApplicant = document.getElementById('mytable').rows[1].id;
+    var chosenApplicant;
+    if(document.getElementById('crewsTable').rows.length > 1) {
+        chosenApplicant = document.getElementById('crewsTable').rows[1].id;
+    } else {
+        document.getElementById("view201").disabled = true;
+    }
 
     function chooseApplicant(applicantNo) {
         chosenApplicant = applicantNo;
@@ -179,8 +182,6 @@
             searchText2 = "null";
         }
         if(searchText1 != "")  {
-            // alert("{{url('home/search')}}" + "/"  + searchText1 + "/" + searchField1+ "/"  + searchText2 + "/" + searchField2);
-            // window.location = "{{url('home/search')}}" + "/"  + searchText1 + "/" + searchField1;
             window.location = "{{url('home/search')}}" + "/"  + searchText1 + "/" + searchField1+ "/"  + searchText2 + "/" + searchField2;
         }else  window.location = "{{url('home')}}";
     }
@@ -198,15 +199,7 @@
     }
 
     function view201() {
-    //     // alert(document.getElementById('mytable').rows[1].id);
-    //     // var imgValue =   document.getElementById("applicantImage").src + "";
-    //     // var applicantNo = imgValue.substring(imgValue.lastIndexOf("/")+1, imgValue.lastIndexOf("."));
-    //     if(chosenApplicant == "") 
-    //         chosenApplicant = document.getElementById('mytable').rows[1].id;
-    //     }
         window.open("{{url('crews')}}/" + chosenApplicant);
     }
-
-    // alert(document.getElementById('mytable').rows[1].id);
 
 </script>
