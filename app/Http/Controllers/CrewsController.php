@@ -32,7 +32,7 @@ class CrewsController extends Controller
                 'civilStatus' => $this->getCivilStatus($crewDetails->CIVILSTATUS),
                 'crewstatus' =>  $crewStatus,
                 'datedisemb' => $dateDisembarked,
-                'lastEmbarkStatus' => $this->getLastEmbarkStatus($applicantNo),
+                'lastEmbarkStatus' => ($dateDisembarked!='' && $crewDetails->DATEEMB!='') ?$this->getLastEmbarkStatus($applicantNo) :null,
                 'crewdocuments' => $this->getDocuments($applicantNo)
             ];
             return view('crews/crew')->with($data);

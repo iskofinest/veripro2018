@@ -517,8 +517,8 @@
                                         <td> {{$document->DOCUMENT}} </td>
                                         <td> {{$document->DOCNO}} </td>
                                         <td> {{$document->RANK}} </td>
-                                        <td> {{$document->DATEISSUED}} </td>
-                                        <td> {{$document->DATEEXPIRED}} </td>
+                                        <td> {{date_format(date_create($document->DATEISSUED),"Y/m/d")}} </td>
+                                        <td> {{date_format(date_create($document->DATEEXPIRED),"Y/m/d")}} </td>
                                     </tr>
                                 @endforeach
                             @endif

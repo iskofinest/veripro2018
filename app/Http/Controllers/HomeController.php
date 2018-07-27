@@ -66,12 +66,14 @@ class HomeController extends Controller
 
     public function search(Request $request) {
         if(session('employeeid')) {
-            $searchText1 = $request->searchText1;
+            
+            $searchText1 = $request->searchField1;
             $fieldToSearch1 = $request->fieldToSearch1;
-            $searchText2 = $request->searchText2;
+            $searchText2 = $request->searchField2;
             $fieldToSearch2 = $request->fieldToSearch2;
             if($searchText1 == "null") $searchText1 = "";
             if($searchText2 == "null") $searchText2 = "";
+            // dd($searchText1, $fieldToSearch1, $searchText2, $fieldToSearch2);
             $applicants = $this->searchApplicantsBy($searchText1, $fieldToSearch1, $searchText2, $fieldToSearch2);
             $data = [
                 'applicants'  => $applicants,

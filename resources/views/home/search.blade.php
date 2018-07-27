@@ -2,60 +2,72 @@
     
         <section class="col-sm-9 col-md-9">
 
-            <div class="form-inline " style="width: 1000px">
-            
-                <div class="pl-5 form-group mx-sm-3 mb-2">
-                    <label class="sr-only" for="fieldToSearch1"> Select Field </label>
-                    <select class="form-control  pr-0 font-weight-bold" id="fieldToSearch1" onchange="field1OnChange()">
+            {!! Form::open(['action' => ['HomeController@search'], 'method' => 'POST', 'class' => 'form']) !!}
+
+                <div class="row">
+
+                    <div class="col-sm-2 col-md-2">
+                        <label class="sr-only" for="fieldToSearch1"> Select Field </label>
+                        <select class="form-control  pr-0 font-weight-bold" name="fieldToSearch1" id="fieldToSearch1" onchange="field1OnChange()">
+                                <option value="crew.FName">FAMILY NAME</option>
+                                <option value="crew.CREWCODE">CREW CODE</option>
+                                <option value="crew.APPLICANTNO">APPLICANT NO</option>
+                                <option value="crew.GNAME">GIVEN NAME</option>
+                                <option value="rank.RANK">RANK</option>
+                                <option value="vessel.VESSEL">VESSEL</option>
+                        </select>
+
+                        @if(isset($fieldToSearch1))
+                            <script>
+                                document.getElementById('fieldToSearch1').value = {{$fieldToSearch1}};
+                            </script>
+                        @endif
+                    </div>
+
+                    <div class="col-sm-2 col-md-2 pl-0">
+                        <label class="sr-only" for="searchField1"> Search </label>
+                        <input type="text" name="searchField1" id="searchField1" class="form-control font-weight-bold" style="width: 180px;"
+                            @if(isset($searchText1))
+                                value="{{$searchText1}}"
+                            @endif
+                        placeholder="Search" autofocus style="width: 300px; text-transform: uppercase" name="searchField1">
+                    </div>
+
+                    <div class="col-sm-2 col-md-2">
+                        <label class="sr-only" for="fieldToSearch2"> Select Field </label>
+                        <select class="form-control  pr-0 font-weight-bold" id="fieldToSearch2" name="fieldToSearch2" onchange="field2OnChange()">
                             <option value="crew.FName">FAMILY NAME</option>
                             <option value="crew.CREWCODE">CREW CODE</option>
                             <option value="crew.APPLICANTNO">APPLICANT NO</option>
                             <option value="crew.GNAME">GIVEN NAME</option>
                             <option value="rank.RANK">RANK</option>
                             <option value="vessel.VESSEL">VESSEL</option>
-                    </select>
-                    
-                    @if(isset($fieldToSearch1))
-                        <script>
-                            document.getElementById('fieldToSearch1').value = {{$fieldToSearch1}};
-                        </script>
-                    @endif
-                    <label class="sr-only" for="searchField1"> Search </label>
-                    <input type="text" id="searchField1" class="form-control ml-2 font-weight-bold" style="width: 250px;"
-                        @if(isset($searchText1))
-                            value="{{$searchText1}}"
+                        </select>
+                        @if(isset($fieldToSearch2))
+                            <script>
+                                document.getElementById('fieldToSearch2').value = "{{$fieldToSearch2}}";
+                            </script>
                         @endif
-                    placeholder="Search" required autofocus style="width: 300px; text-transform: uppercase" name="searchField1">
-                </div>
-                    
-                <div class="form-group mx-sm-3 mb-2">
-                    <label class="sr-only" for="fieldToSearch2"> Select Field </label>
-                    <select class="form-control  pr-0 font-weight-bold" id="fieldToSearch2" onchange="field2OnChange()">
-                        <option value="crew.FName">FAMILY NAME</option>
-                        <option value="crew.CREWCODE">CREW CODE</option>
-                        <option value="crew.APPLICANTNO">APPLICANT NO</option>
-                        <option value="crew.GNAME">GIVEN NAME</option>
-                        <option value="rank.RANK">RANK</option>
-                        <option value="vessel.VESSEL">VESSEL</option>
-                    </select>
+                    </div>
 
-                    @if(isset($fieldToSearch2))
-                        <script>
-                            document.getElementById('fieldToSearch2').value = "{{$fieldToSearch2}}";
-                        </script>
-                    @endif
-                    <label class="sr-only" for="searchField"2> Search </label>
-                    <input type="text" id="searchField2" class="form-control ml-2 font-weight-bold" style="width: 250px;"
-                        @if(isset($searchText2))
-                            value="{{$searchText2}}"
-                        @endif
-                    placeholder="Search" required style="width: 300px; text-transform: uppercase" name="searchField2">
-                    
+                    <div class="col-sm-2 col-md-2">
+                            <label class="sr-only" for="searchField2"> Search </label>
+                            <input type="text" name="searchField2" id="searchField2" class="form-control font-weight-bold" style="width: 180px;"
+                                @if(isset($searchText2))
+                                    value="{{$searchText2}}"
+                                @endif
+                            placeholder="Search" autofocus style="width: 300px; text-transform: uppercase" name="searchField2">
+                    </div>
+
+                    {{Form::submit('Submit', ['class' => 'btn btn-primary ml-3'])}}
+                    <div class="col-sm-2 col-md-2">
+                        
+                    </div>
+
                 </div>
 
+            {!! Form::close() !!} 
 
-            </div> <!-- div form-inline close tag -->
-        
             <table class="table table-hover" id="crewsTable">
                 <thead class="thead-dark ">
                     <tr>
@@ -170,33 +182,33 @@
     });
     
 
-    function search() {
-        var searchText1 = $('#searchField1').val();
-        var searchField1 = $('#fieldToSearch1').val();
-        var searchText2 = $('#searchField2').val();
-        var searchField2 = $('#fieldToSearch2').val();
-        if(searchText1 === "") {
-            searchText1 = "null";
-        }
-        if(searchText2 == "") {
-            searchText2 = "null";
-        }
-        if(searchText1 != "")  {
-            window.location = "{{url('home/search')}}" + "/"  + searchText1 + "/" + searchField1+ "/"  + searchText2 + "/" + searchField2;
-        }else  window.location = "{{url('home')}}";
-    }
+    // function search() {
+    //     var searchText1 = $('#searchField1').val();
+    //     var searchField1 = $('#fieldToSearch1').val();
+    //     var searchText2 = $('#searchField2').val();
+    //     var searchField2 = $('#fieldToSearch2').val();
+    //     if(searchText1 === "") {
+    //         searchText1 = "null";
+    //     }
+    //     if(searchText2 == "") {
+    //         searchText2 = "null";
+    //     }
+    //     if(searchText1 != "")  {
+    //         window.location = "{{url('home/search')}}" + "/"  + searchText1 + "/" + searchField1+ "/"  + searchText2 + "/" + searchField2;
+    //     }else  window.location = "{{url('home')}}";
+    // }
 
-    function field1OnChange() {
-        if($('#searchField1').val() != "") {
-            search();
-        }
-    }
+    // function field1OnChange() {
+    //     if($('#searchField1').val() != "") {
+    //         search();
+    //     }
+    // }
 
-    function field2OnChange() {
-        if($('#searchField2').val() != "") {
-            search();
-        }
-    }
+    // function field2OnChange() {
+    //     if($('#searchField2').val() != "") {
+    //         search();
+    //     }
+    // }
 
     function view201() {
         window.open("{{url('crews')}}/" + chosenApplicant);
