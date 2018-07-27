@@ -32,8 +32,8 @@ class CrewsController extends Controller
                 'civilStatus' => $this->getCivilStatus($crewDetails->CIVILSTATUS),
                 'crewstatus' =>  $crewStatus,
                 'datedisemb' => $dateDisembarked,
-                'lastEmbarkStatus' => $this->getLastEmbarkStatus($applicantNo)
-
+                'lastEmbarkStatus' => $this->getLastEmbarkStatus($applicantNo),
+                'crewdocuments' => $this->getDocuments($applicantNo)
             ];
             return view('crews/crew')->with($data);
         } else return redirect('/')->with('error', 'You must login first!!');
@@ -225,12 +225,21 @@ class CrewsController extends Controller
     private function getDocuments($applicantNo) {
         $documents = DB::table('crewdocstatus')
             ->leftJoin('crewdocuments', 'crewdocuments.DOCCODE', '=', 'crewdocstatus.DOCCODE')
-            ->leftJoin('rank', 'rank.RANKCODE', '=', 'crewdocuments.RANKCODE')
-            -where('crewdocuments', 'D')
+            ->leftJoin('rank', 'rank.RANKCODE', '=', 'crewdocstatus.RANKCODE')
+            ->where('crewdocuments.TYPE', '=', 'D')
             ->where('crewdocstatus.APPLICANTNO', $applicantNo)
-            ->orderBy(array('crewdocuments.DOCUMENT'=>'desc', 'crewdocstatus.DOCUMENT'=>'desc'))
-            ->groupBy('crewdocuments.DOCUMENT')
-            ->select('crewdocuments.DOCUMENT', 'crewdocuments.DOCCODE', 'crewdocstatus.DOCNO', 'crewdocstatus.DATEISSUED', 'crewdocstatus.DATEEXPIRED')
+            ->orderBy('crewdocuments.DOCUMENT')
+            // ->orderBy(array('crewdocuments.DOCUMENT'=>'DESC', 'crewdocstatus.DOCUMENT'=>'DESC'))
+            ->groupBy('crewdocuments.DOCUMENT','crewdocstatus.DOCNO', 
+            'crewdocuments.DOCCODE', 
+            'crewdocstatus.DATEISSUED', 
+            'crewdocstatus.DATEEXPIRED', 'rank.RANK')
+            ->select('crewdocuments.DOCUMENT', 
+                    'crewdocstatus.DOCNO', 
+                    'crewdocuments.DOCCODE', 
+                    'crewdocstatus.DATEISSUED', 
+                    'crewdocstatus.DATEEXPIRED',
+                    'rank.RANK')
             ->get();
         return $documents;
     }

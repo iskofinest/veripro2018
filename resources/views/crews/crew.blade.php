@@ -16,7 +16,7 @@
 
 <section >
     <div class="row">
-        <div class="col-sm-6 col-md-6">
+        <div class="col-sm-6 col-md-6 pr-1">
             <div class="card">
                 <div class="card-body">
                     <h3 class="card-title lead">
@@ -499,9 +499,9 @@
             </div> <!-- div title card -->
 
         </div> <!-- column -->
-        <div class="col-sm-6 col-md-6">
+        <div class="col-sm-6 col-md-6 pl-0">
 
-            <table class="table table-hover">
+            <table class="table table-hover docu-table" >
                 <thead class="thead-dark ">
                     <tr>
                         <th>DOCUMENT</th>
@@ -510,6 +510,19 @@
                         <th>DATE ISSUED</th>
                         <th>DATE EXPIRED</th>
                     </tr>
+                    <tbody>
+                            @if(count($crewdocuments) > 0)
+                                @foreach($crewdocuments as $document)
+                                    <tr style="cursor: pointer;">
+                                        <td> {{$document->DOCUMENT}} </td>
+                                        <td> {{$document->DOCNO}} </td>
+                                        <td> {{$document->RANK}} </td>
+                                        <td> {{$document->DATEISSUED}} </td>
+                                        <td> {{$document->DATEEXPIRED}} </td>
+                                    </tr>
+                                @endforeach
+                            @endif
+                    </tbody>
                 </thead>
 
             </table>

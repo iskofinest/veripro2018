@@ -20,3 +20,21 @@
     background-color: rgb(155, 148, 148);
     border-color: rgb(155, 148, 148);   
 }
+
+/*********************************************************/
+.docu-table > tr {
+    width: 100% !important;  
+    display: inline-table !important;
+    table-layout: fixed !important;
+    }
+    
+    .docu-table >table{
+     height: 3000px !important;            
+     display: -moz-groupbox !important;  
+    }
+    .docu-table >tbody{
+      overflow-y: scroll !important;      
+      height: 1150px !important;            
+      width: 100% !important;
+      position: absolute !important;
+    }
