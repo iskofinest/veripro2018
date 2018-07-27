@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use DB;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 
 class HomeController extends Controller
@@ -55,9 +56,8 @@ class HomeController extends Controller
             ->leftJoin('rank', 'rank.RANKCODE', '=', 'crewchange.RANKCODE')
             ->leftJoin('vessel', function ($join) {
                 $join->on('vessel.VESSELCODE', '=', 'crewchange.VESSELCODE')
-                    ->whereNull('crewchange.ARRMNLDATE')
-                    ->whereNull('crewchange.DATEDISEMB')
-                    ->whereNull('crewchange.DEPMNLDATE');
+                    ->whereDate('crewchange.DATEEMB', '<', Carbon::now())
+                    ->whereDate('crewchange.DATEDISEMB', '>', Carbon::now());
             })
             ->select('crew.APPLICANTNO', 'crew.CREWCODE', 'crew.FNAME', 'crew.GNAME', 'crew.MNAME', 'crew.STATUS', 
             'crew.UTILITY', 'scholar.DESCRIPTION', 'fasttrack.FASTTRACK', 'rank.RANK', 'vessel.VESSEL')->paginate(15);
@@ -101,9 +101,8 @@ class HomeController extends Controller
             ->leftJoin('rank', 'rank.RANKCODE', '=', 'crewchange.RANKCODE')
             ->leftJoin('vessel', function ($join) {
                 $join->on('vessel.VESSELCODE', '=', 'crewchange.VESSELCODE')
-                    ->whereNull('crewchange.ARRMNLDATE')
-                    ->whereNull('crewchange.DISEMBREASONCODE')
-                    ->whereNull('crewchange.DEPMNLDATE');
+                    ->whereDate('crewchange.DATEEMB', '<', Carbon::now())
+                    ->whereDate('crewchange.DATEDISEMB', '>', Carbon::now());
             })
             ->where([
                     [$fieldToSearch1, 'like', '%'.$searchText1.'%'],

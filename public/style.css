@@ -15,3 +15,8 @@
 .col .test {
     border: 1px solid black;
 }
+
+.crew-201status {
+    background-color: rgb(155, 148, 148);
+    border-color: rgb(155, 148, 148);   
+}

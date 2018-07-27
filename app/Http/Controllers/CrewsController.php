@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 use DB;
 
 class CrewsController extends Controller
@@ -64,13 +65,16 @@ class CrewsController extends Controller
                     ->whereIn('crewdocstatus.DOCCODE', array('J1', 'J5'));
             })
             ->leftJoin('vessel', function ($join) {
-                $join->on('vessel.VESSELCODE', '=', 'crewchange.VESSELCODE');
+                $join->on('vessel.VESSELCODE', '=', 'crewchange.VESSELCODE')
+                    ->whereDate('crewchange.DATEEMB', '<', Carbon::now())
+                    ->whereDate('crewchange.DATEDISEMB', '>', Carbon::now());
             })
             ->where('crew.APPLICANTNO', $applicantNo)
             ->select('crew.APPLICANTNO', 'crew.CREWCODE', 'crew.FNAME', 'crew.GNAME', 'crew.MNAME', 'rank.RANK', 'crew.ADDRESS', 
                 'crew.MUNICIPALITY', 'crew.CITY', 'crew.ZIPCODE', 'crew.TELNO', 'crew.CEL4', 'crew.EMAIL', 'crew.BIRTHDATE', 
                 'crew.BIRTHPLACE', 'crew.GENDER', 'crew.CIVILSTATUS', 'crew.RELIGION', 'crew.SSS', 'crew.TIN', 'crew.PHILHEALTH', 
                 'crew.PAGIBIG', 'crew.DMBWEIGHT', 'crew.WEIGHT', 'crew.HEIGHT', 'crew.NEXTOFKIN', 'crew.STATUS', 'crew.CIVILSTATUS', 
+                'crew.HIRINGRESTRICTION', 'crew.REMARKS',
                 'crew.RECOMMENDEDBY AS crewRecomended', 
                 'crewchange.DATEEMB', 'crewchange.DATECHANGEDISEMB', 'crewchange.DATEDISEMB', 'crewchange.CONFIRMDEPDATE', 
                 'crewchange.ARRMNLDATE',
@@ -191,7 +195,7 @@ class CrewsController extends Controller
         return $crewStatus;
     }
 
-    function dateDifference($date_2) {
+    private function dateDifference($date_2) {
         $datetimenow=date("Y-m-d H:i:s");
         $current_date = date_create($datetimenow);
         $embark_date = date_create($date_2);
@@ -199,7 +203,7 @@ class CrewsController extends Controller
         return $interval->format('%a');
     }
 
-    function getLastEmbarkStatus($applicantNo) {
+    private function getLastEmbarkStatus($applicantNo) {
         $lastCrewChange = DB::table('crewchange')
         ->leftJoin('vessel', 'vessel.VESSELCODE', '=', 'crewchange.VESSELCODE')
         ->leftJoin('rank', 'rank.RANKCODE', '=', 'crewchange.RANKCODE')
@@ -214,6 +218,21 @@ class CrewsController extends Controller
         $lastCrewChangeDetails['embarked'] = $lastCrewChange->DATEEMB;
         $lastCrewChangeDetails['eoc'] = ($lastCrewChange->DATECHANGEDISEMB == '') ? $lastCrewChange->DATEDISEMB:$lastCrewChange->DATECHANGEDISEMB;
         return $lastCrewChangeDetails;
+    }
+
+    /***********************************************DOCUMENTS*******************************************************************/
+
+    private function getDocuments($applicantNo) {
+        $documents = DB::table('crewdocstatus')
+            ->leftJoin('crewdocuments', 'crewdocuments.DOCCODE', '=', 'crewdocstatus.DOCCODE')
+            ->leftJoin('rank', 'rank.RANKCODE', '=', 'crewdocuments.RANKCODE')
+            -where('crewdocuments', 'D')
+            ->where('crewdocstatus.APPLICANTNO', $applicantNo)
+            ->orderBy(array('crewdocuments.DOCUMENT'=>'desc', 'crewdocstatus.DOCUMENT'=>'desc'))
+            ->groupBy('crewdocuments.DOCUMENT')
+            ->select('crewdocuments.DOCUMENT', 'crewdocuments.DOCCODE', 'crewdocstatus.DOCNO', 'crewdocstatus.DATEISSUED', 'crewdocstatus.DATEEXPIRED')
+            ->get();
+        return $documents;
     }
 
 }
