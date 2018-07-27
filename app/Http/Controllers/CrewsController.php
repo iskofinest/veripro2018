@@ -11,6 +11,8 @@ class CrewsController extends Controller
     public function show201($applicantNo) {
         if(session('employeeid')) {
             $crewDetails = $this->findCrewByApplicantNo($applicantNo);
+            $dateDisembarked = ($crewDetails->DATECHANGEDISEMB == '') ? $crewDetails->DATEDISEMB:$crewDetails->DATECHANGEDISEMB;
+            $crewStatus = $this->getCrewStatus($crewDetails);
             $personalweight = (empty($crewDetails->WEIGHT) ) ? 0 : $crewDetails->WEIGHT;
             $personalheight = $crewDetails->HEIGHT;
             $personaldmbweight = (empty($crewDetails->DMBWEIGHT) ) ? 0 : $crewDetails->DMBWEIGHT;
@@ -27,8 +29,10 @@ class CrewsController extends Controller
                 'age' => floor((strtotime($datetimenow) - strtotime($crewDetails->BIRTHDATE)) / (86400*365.25)),
                 'gender' => ($crewDetails->GENDER == 'M') ?'MALE' : 'FEMALE',
                 'civilStatus' => $this->getCivilStatus($crewDetails->CIVILSTATUS),
-                'crewstatus' =>  $this->getCrewStatus($crewDetails),
-                'datedisemb' => ($crewDetails->DATECHANGEDISEMB == '') ? $crewDetails->DATEDISEMB:$crewDetails->DATECHANGEDISEMB
+                'crewstatus' =>  $crewStatus,
+                'datedisemb' => $dateDisembarked,
+                'lastEmbarkStatus' => $this->getLastEmbarkStatus($applicantNo)
+
             ];
             return view('crews/crew')->with($data);
         } else return redirect('/')->with('error', 'You must login first!!');
@@ -164,8 +168,8 @@ class CrewsController extends Controller
         } else {
             if(strtotime($crewDetails->DATEEMB) > strtotime($datetimenow)) {    // IF HAS SCHEDLUED EMBARKMENT
                 // COUNT HOW MANY DAYS DIFFER
-                $dateEmbarkmentDifference = dateDifference($crewDetails->DATEEMB);
-                if($dateEmbarkmentDifference <= 90 && $dateEmbarkmentDifference > 0) { // IF EMBARKMENT HAS LESS THAN 3 MONTHS
+                $dateEmbarkmentDifference = $this->dateDifference($crewDetails->DATEEMB);
+                if($dateEmbarkmentDifference <= 90 && $dateEmbarkmentDifference >= 0) { // IF EMBARKMENT HAS LESS THAN 3 MONTHS
                     $crewStatus = 'EMBARKING';
                 } else if($dateEmbarkmentDifference > 90) {   // IF EMBARKMENT IS BEYOND 3 MONTHS BUT LESS THAN 1 YEAR
                     $crewStatus = 'STANDBY (LINE UP)';
@@ -193,6 +197,23 @@ class CrewsController extends Controller
         $embark_date = date_create($date_2);
         $interval = date_diff($embark_date, $current_date);
         return $interval->format('%a');
+    }
+
+    function getLastEmbarkStatus($applicantNo) {
+        $lastCrewChange = DB::table('crewchange')
+        ->leftJoin('vessel', 'vessel.VESSELCODE', '=', 'crewchange.VESSELCODE')
+        ->leftJoin('rank', 'rank.RANKCODE', '=', 'crewchange.RANKCODE')
+        ->where([
+            ['crewchange.APPLICANTNO', $applicantNo]
+            // ['crewchange.DATEDISEMB', DB::raw("(select max(crewchange.DATEDISEMB) from crewchange where crewchange.APPLICANTNO = $applicantNo )")]
+        ])
+        ->orderBy('crewchange.DATEDISEMB', 'desc')
+        ->select('crewchange.DATECHANGEDISEMB', 'crewchange.DATEDISEMB', 'crewchange.DATEEMB', 'rank.RANK as lastrank', 'vessel.VESSEL')->skip(1)->first();
+        $lastCrewChangeDetails['rank'] = $lastCrewChange->lastrank;
+        $lastCrewChangeDetails['vessel'] = $lastCrewChange->VESSEL;
+        $lastCrewChangeDetails['embarked'] = $lastCrewChange->DATEEMB;
+        $lastCrewChangeDetails['eoc'] = ($lastCrewChange->DATECHANGEDISEMB == '') ? $lastCrewChange->DATEDISEMB:$lastCrewChange->DATECHANGEDISEMB;
+        return $lastCrewChangeDetails;
     }
 
 }
